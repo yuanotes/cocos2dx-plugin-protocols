@@ -1,0 +1,3 @@
+*.class
+proj.ios/PluginProtocol.xcodeproj/xcuserdata
+proj.android/gen
