@@ -32,23 +32,6 @@ using namespace cocos2d::plugin;
 
 @implementation IAPWrapper
 
-+ (void) onSubscriptionVerifyResult:(id) obj withRet:(IAPSubscriptionVerifyReceiptCode)ret withMsg:(NSString *)msg {
-    PluginProtocol* plugin = PluginUtilsIOS::getPluginPtr(obj);
-    ProtocolIAP* iapPlugin = dynamic_cast<ProtocolIAP*>(plugin);
-    ProtocolIAP::ProtocolIAPSubscriptionVerifyCallback callback = iapPlugin->getSubscriptionVerifyCallback();
-    if (callback) {
-        std::string chMsg= "";
-        if (msg != nullptr) {
-            chMsg = [msg UTF8String];
-        }
-        std::string stdmsg(chMsg);
-        callback(ret, stdmsg);
-    } else {
-        PluginUtilsIOS::outputLog("No subscription verification callback for IAP Plugin.");
-
-    }
-}
-
 + (void) onPayResult:(id) obj withRet:(IAPResult) ret withMsg:(NSString*) msg
 {
     PluginProtocol* plugin = PluginUtilsIOS::getPluginPtr(obj);

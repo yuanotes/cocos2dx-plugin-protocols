@@ -30,8 +30,6 @@ THE SOFTWARE.
 - (void) payForProduct: (NSMutableDictionary*) profuctInfo;
 - (void) setDebugMode: (BOOL) debug;
 - (void) restoreCompletedTransactions;
-- (void) addObserver;
-- (void) verifyReceiptValidation:(NSString*)productID withReceipt:(NSString*)receipt;
 - (NSString*) getSDKVersion;
 - (NSString*) getPluginVersion;
 

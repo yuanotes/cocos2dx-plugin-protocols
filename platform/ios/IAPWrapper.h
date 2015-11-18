@@ -30,6 +30,8 @@ typedef enum {
     PaymentTransactionStateFailed,
     PaymentTransactionStateRestored,
     PaymentTransactionStateTimeout,
+
+    SubscriptionVerifySuccess,
 } IAPResult;
 typedef enum {
     RequestSuccees=0,
@@ -37,20 +39,11 @@ typedef enum {
     RequestTimeout,
 } ProductRequest;
 
-typedef enum {
-    VerifySuccess = 0,
-    VerifyFail,
-    VerifyReceipDataError,
-    VerifyConnectionError,
-} IAPSubscriptionVerifyReceiptCode;
-
 @interface IAPWrapper : NSObject
 {
     
 }
 
-+(void) onRestoreResult:(id) obj withRet:(IAPResult) ret withMsg: (NSString*) msg;
 +(void) onPayResult:(id) obj withRet:(IAPResult) ret withMsg:(NSString*) msg;
 +(void) onRequestProduct:(id)ojb withRet:(ProductRequest) ret withProducts:(NSArray *)products;
-+(void) onSubscriptionVerifyResult:(id)obj withRet:(IAPSubscriptionVerifyReceiptCode)ret withMsg:(NSString*) msg;
 @end

@@ -107,37 +107,6 @@ void ProtocolIAP::payForProduct(TProductInfo info,ProtocolIAPPurchaseCallback ca
         }
     }
 }
-
-void ProtocolIAP::addObserver()
-{
-    PluginOCData* pData = PluginUtilsIOS::getPluginOCData(this);
-    assert(pData != NULL);
-    
-    id ocObj = pData->obj;
-    if ([ocObj conformsToProtocol:@protocol(InterfaceIAP)]) {
-        NSObject<InterfaceIAP>* curObj = ocObj;
-        [curObj addObserver];
-    }
-}
-    
-void ProtocolIAP::verifySubscriptionReceipt(const std::string& productID, const std::string& receipt, ProtocolIAPSubscriptionVerifyCallback callback) {
-    setSubscriptionVerifyCallback(callback);
-    if (productID.empty()) {
-        std::string str("product id is empty.");
-        callback(SubscriptionVerifyReceiptCode::VerifyFail, str);
-    }
-    
-    PluginOCData* pData = PluginUtilsIOS::getPluginOCData(this);
-    assert(pData != NULL);
-    
-    id ocObj = pData->obj;
-    if ([ocObj conformsToProtocol:@protocol(InterfaceIAP)]) {
-        NSObject<InterfaceIAP>* curObj = ocObj;
-        NSString* nsRecept = [NSString stringWithUTF8String:receipt.c_str()];
-        NSString* nsProductID = [NSString stringWithUTF8String:productID.c_str()];
-        [curObj verifyReceiptValidation:nsProductID withReceipt:nsRecept];
-    }
-}
     
 void ProtocolIAP::restore(ProtocolIAPPurchaseCallback cb)
 {

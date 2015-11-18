@@ -40,6 +40,8 @@ typedef enum
     kPayFail,
     kPayRestored,
     kPayTimeOut,
+    
+    kSubscriptionVerifySuccess,
 } PayResultCode;
     
 typedef enum {
@@ -48,13 +50,6 @@ typedef enum {
     RequestTimeout,
 } IAPProductRequest;
 
-typedef enum {
-    VerifySuccess = 0,
-    VerifyFail,
-    VerifyReceipDataError,
-    VerifyConnectionError,
-} SubscriptionVerifyReceiptCode;
-
 class ProtocolIAP : public PluginProtocol
 {
 public:
@@ -62,7 +57,7 @@ public:
 	virtual ~ProtocolIAP();
 
 	typedef std::function<void(int, std::string&)> ProtocolIAPPurchaseCallback;
-    typedef std::function<void(int, std::string&)> ProtocolIAPSubscriptionVerifyCallback;
+
 
     /**
     @brief config the developer info
@@ -85,8 +80,7 @@ public:
     void payForProduct(TProductInfo info);
     void payForProduct(TProductInfo info, ProtocolIAPPurchaseCallback cb);
     void restore(ProtocolIAPPurchaseCallback cb);
-    void addObserver();
-    void verifySubscriptionReceipt(const std::string& productID, const std::string& receipt, ProtocolIAPSubscriptionVerifyCallback callback);
+
     /**
     @brief set callback function
     */
@@ -102,24 +96,8 @@ public:
     {
     	return _purchaseCallback;
     }
-    /**
-     @brief set callback function
-     */
-    inline void setSubscriptionVerifyCallback(ProtocolIAPSubscriptionVerifyCallback cb)
-    {
-        _subscriptionVerifyCallback = cb;
-    }
-    
-    /**
-     @brief get callback function
-     */
-    inline ProtocolIAPSubscriptionVerifyCallback getSubscriptionVerifyCallback()
-    {
-        return _subscriptionVerifyCallback;
-    }
 protected:
     ProtocolIAPPurchaseCallback _purchaseCallback;
-    ProtocolIAPSubscriptionVerifyCallback _subscriptionVerifyCallback;
 };
 
 }} // namespace cocos2d { namespace plugin {
