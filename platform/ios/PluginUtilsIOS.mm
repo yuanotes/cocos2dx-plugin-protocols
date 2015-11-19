@@ -162,6 +162,21 @@ NSMutableDictionary* PluginUtilsIOS::createDictFromMap(std::map<std::string, std
     
     return dict;
 }
+    
+NSMutableArray* PluginUtilsIOS::createArrayFromVector(std::vector<std::string> *paramVector){
+    if (NULL == paramVector)
+    {
+        return nil;
+    }
+    NSMutableArray* array = [NSMutableArray array];
+    for (auto it = paramVector->begin(); it != paramVector->end(); ++it)
+    {
+        [array addObject:[NSString stringWithUTF8String:(*it).c_str()]];
+    }
+    
+    return array;
+}
+    
 void PluginUtilsIOS::callOCFunctionWithName_oneParam(PluginProtocol* pPlugin, const char* funcName, id param)
 {
     return_if_fails(funcName != NULL && strlen(funcName) > 0);

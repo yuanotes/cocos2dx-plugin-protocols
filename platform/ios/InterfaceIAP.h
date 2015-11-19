@@ -28,8 +28,11 @@ THE SOFTWARE.
 
 - (void) configDeveloperInfo: (NSMutableDictionary*) cpInfo;
 - (void) payForProduct: (NSMutableDictionary*) profuctInfo;
+- (void) requestProducts: (NSMutableArray*) profuctInfo;
+- (void) purchaseSubscription: (NSMutableDictionary*) subInfo;
 - (void) setDebugMode: (BOOL) debug;
 - (void) restoreCompletedTransactions;
+- (void) checkSubscription: (NSMutableDictionary*) subInfo;
 - (NSString*) getSDKVersion;
 - (NSString*) getPluginVersion;
 

@@ -33,22 +33,32 @@ namespace cocos2d { namespace plugin {
 
 typedef std::map<std::string, std::string> TIAPDeveloperInfo;
 typedef std::map<std::string, std::string> TProductInfo;
+typedef std::vector<std::string> TProductIDList;
 typedef std::vector<TProductInfo> TProductList;
-typedef enum 
+typedef enum
 {
     kPaySuccess = 0,
     kPayFail,
-    kPayRestored,
-    kPayTimeOut,
-    
-    kSubscriptionVerifySuccess,
 } PayResultCode;
     
+typedef enum 
+{
+    kSubscriptionVerifySuccess = 0,
+    kSubscriptionVerifyFailed,
+} SubscriptResultCode;
+
+    
+    
 typedef enum {
-    RequestSuccees=0,
-    RequestFail,
-    RequestTimeout,
-} IAPProductRequest;
+    kRequestSuccees=0,
+    kRequestFail,
+    kRequestTimeout,
+} IAPProductRequestCode;
+    
+typedef enum {
+    kRestored = 0,
+    kRestoreFailed,
+} IAPRestoreCode;
 
 class ProtocolIAP : public PluginProtocol
 {
@@ -56,7 +66,10 @@ public:
 	ProtocolIAP();
 	virtual ~ProtocolIAP();
 
-	typedef std::function<void(int, std::string&)> ProtocolIAPPurchaseCallback;
+	typedef std::function<void(PayResultCode, std::string&)> ProtocolIAPPurchaseCallback;
+	typedef std::function<void(SubscriptResultCode, std::string&)> ProtocolIAPCheckSubscriptionCallback;
+    typedef std::function<void(IAPProductRequestCode, TProductList)> ProtocolIAPProductRequestCallback;
+    typedef std::function<void(IAPRestoreCode, TProductIDList)> ProtocolIAPRestoreCallback;
 
 
     /**
@@ -79,7 +92,10 @@ public:
     */
     void payForProduct(TProductInfo info);
     void payForProduct(TProductInfo info, ProtocolIAPPurchaseCallback cb);
-    void restore(ProtocolIAPPurchaseCallback cb);
+    void requestProducts(TProductIDList infoList, ProtocolIAPProductRequestCallback cb);
+    void restore(ProtocolIAPRestoreCallback cb);
+    void checkSubscription(TProductInfo info, ProtocolIAPCheckSubscriptionCallback cb);
+    void purchaseSubscription(TProductInfo info, ProtocolIAPCheckSubscriptionCallback cb);
 
     /**
     @brief set callback function
@@ -96,8 +112,35 @@ public:
     {
     	return _purchaseCallback;
     }
+    
+    inline void setCheckSubscriptionCallback(ProtocolIAPCheckSubscriptionCallback & cb){
+        _checkSubscriptionCallback = cb;
+    }
+    
+    inline ProtocolIAPCheckSubscriptionCallback getCheckSubscriptionCallback(){
+        return _checkSubscriptionCallback;
+    }
+    
+    inline void setProductRequestCallback(ProtocolIAPProductRequestCallback & cb){
+        _productRequestsCallback = cb;
+    }
+    
+    inline ProtocolIAPProductRequestCallback getProductRequestCallback(){
+        return _productRequestsCallback;
+    }
+    
+    inline void setRestoreCallback(ProtocolIAPRestoreCallback & cb){
+        _restoreCallback = cb;
+    }
+    
+    inline ProtocolIAPRestoreCallback getRestoreCallback(){
+        return _restoreCallback;
+    }
 protected:
     ProtocolIAPPurchaseCallback _purchaseCallback;
+    ProtocolIAPCheckSubscriptionCallback _checkSubscriptionCallback;
+    ProtocolIAPProductRequestCallback _productRequestsCallback;
+    ProtocolIAPRestoreCallback _restoreCallback;
 };
 
 }} // namespace cocos2d { namespace plugin {

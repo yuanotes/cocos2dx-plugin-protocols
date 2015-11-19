@@ -28,22 +28,32 @@ THE SOFTWARE.
 typedef enum {
     PaymentTransactionStatePurchased = 0,
     PaymentTransactionStateFailed,
-    PaymentTransactionStateRestored,
-    PaymentTransactionStateTimeout,
-
-    SubscriptionVerifySuccess,
 } IAPResult;
+
+typedef enum {
+    SubscriptionVerifySuccess,
+    SubscriptionVerifyFailed,
+} SubscriptionResult;
+
 typedef enum {
     RequestSuccees=0,
     RequestFail,
     RequestTimeout,
 } ProductRequest;
 
+
+typedef enum {
+    ProductRestored = 0,
+    ProductRestoreFailed,
+} RestoreResult;
+
 @interface IAPWrapper : NSObject
 {
     
 }
 
++(void) onCheckSubscriptionResult:(id) obj withRet:(SubscriptionResult) ret withMsg:(NSString*) msg;
 +(void) onPayResult:(id) obj withRet:(IAPResult) ret withMsg:(NSString*) msg;
++(void) onRestoreProduct:(id)obj withRet:(RestoreResult) ret withProducts:(NSArray*)products;
 +(void) onRequestProduct:(id)ojb withRet:(ProductRequest) ret withProducts:(NSArray *)products;
 @end

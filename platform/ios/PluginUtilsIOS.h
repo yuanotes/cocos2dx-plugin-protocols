@@ -52,6 +52,7 @@ public:
     static id getOCObjFromParam(PluginParam* param);
 
     static NSMutableDictionary* createDictFromMap(std::map<std::string, std::string>* paramMap);
+    static NSMutableArray* createArrayFromVector(std::vector<std::string>* paramVector);
 
     /**
      @brief method don't have return value

@@ -107,10 +107,86 @@ void ProtocolIAP::payForProduct(TProductInfo info,ProtocolIAPPurchaseCallback ca
         }
     }
 }
+void ProtocolIAP::requestProducts(TProductIDList infoList, ProtocolIAPProductRequestCallback cb){
+    if (infoList.empty())
+    {
+        if (NULL != cb)
+        {
+            TProductList result;
+            cb(kRequestFail, result);
+        }
+        PluginUtilsIOS::outputLog("The product info is empty for %s!", this->getPluginName());
+        return;
+    }
+    else
+    {
+        setProductRequestCallback(cb);
+        PluginOCData* pData = PluginUtilsIOS::getPluginOCData(this);
+        assert(pData != NULL);
+        
+        id ocObj = pData->obj;
+        if ([ocObj conformsToProtocol:@protocol(InterfaceIAP)]) {
+            NSObject<InterfaceIAP>* curObj = ocObj;
+            NSMutableArray* array = PluginUtilsIOS::createArrayFromVector(&infoList);
+            [curObj requestProducts:array];
+        }
+    }
+}
+void ProtocolIAP::purchaseSubscription(TProductInfo info,ProtocolIAPCheckSubscriptionCallback callback) {
+    if (info.empty())
+    {
+        if (NULL != callback)
+        {
+            std::string stdstr("Product info error");
+            callback(kSubscriptionVerifyFailed,stdstr);
+        }
+        PluginUtilsIOS::outputLog("The product info is empty for %s!", this->getPluginName());
+        return;
+    }
+    else
+    {
+        setCheckSubscriptionCallback(callback);
+        PluginOCData* pData = PluginUtilsIOS::getPluginOCData(this);
+        assert(pData != NULL);
+        
+        id ocObj = pData->obj;
+        if ([ocObj conformsToProtocol:@protocol(InterfaceIAP)]) {
+            NSObject<InterfaceIAP>* curObj = ocObj;
+            NSMutableDictionary* dict = PluginUtilsIOS::createDictFromMap(&info);
+            [curObj purchaseSubscription:dict];
+        }
+    }
+}
     
-void ProtocolIAP::restore(ProtocolIAPPurchaseCallback cb)
+void ProtocolIAP::checkSubscription(TProductInfo info, ProtocolIAPCheckSubscriptionCallback cb){
+    if (info.empty())
+    {
+        if (NULL != cb)
+        {
+            std::string stdstr("Product info error");
+            cb(kSubscriptionVerifyFailed,stdstr);
+        }
+        PluginUtilsIOS::outputLog("The product info is empty for %s!", this->getPluginName());
+        return;
+    }
+    else
+    {
+        setCheckSubscriptionCallback(cb);
+        PluginOCData* pData = PluginUtilsIOS::getPluginOCData(this);
+        assert(pData != NULL);
+        
+        id ocObj = pData->obj;
+        if ([ocObj conformsToProtocol:@protocol(InterfaceIAP)]) {
+            NSObject<InterfaceIAP>* curObj = ocObj;
+            NSMutableDictionary* dict = PluginUtilsIOS::createDictFromMap(&info);
+            [curObj checkSubscription:dict];
+        }
+    }
+}
+    
+void ProtocolIAP::restore(ProtocolIAPRestoreCallback cb)
 {
-    setPurchaseCallback(cb);
+    setRestoreCallback(cb);
     PluginOCData* pData = PluginUtilsIOS::getPluginOCData(this);
     assert(pData != NULL);
     
