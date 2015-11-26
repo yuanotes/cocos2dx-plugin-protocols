@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "PluginJniHelper.h"
 #include "PluginJavaData.h"
 #include <map>
+#include <vector>
 #include "PluginParam.h"
 #include "PluginJniMacros.h"
 #include <android_native_app_glue.h>
@@ -39,6 +40,7 @@ class PluginUtils
 public:
     static void initPluginWrapper(android_app* app);
     static jobject createJavaMapObject(std::map<std::string, std::string>* paramMap);
+    static jobject createArrayFromVector(std::vector<std::string>* paramVector);
     static void initJavaPlugin(PluginProtocol* pPlugin, jobject jObj, const char* aliasName, const char* className);
     static JNIEnv* getEnv();
 

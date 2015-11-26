@@ -38,7 +38,6 @@ typedef enum {
 typedef enum {
     RequestSuccees=0,
     RequestFail,
-    RequestTimeout,
 } ProductRequest;
 
 

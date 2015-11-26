@@ -40,21 +40,21 @@ typedef enum
     kPaySuccess = 0,
     kPayFail,
 } PayResultCode;
-    
-typedef enum 
+
+typedef enum
 {
     kSubscriptionVerifySuccess = 0,
     kSubscriptionVerifyFailed,
 } SubscriptResultCode;
 
-    
-    
+
+
 typedef enum {
     kRequestSuccees=0,
     kRequestFail,
     kRequestTimeout,
 } IAPProductRequestCode;
-    
+
 typedef enum {
     kRestored = 0,
     kRestoreFailed,
@@ -112,27 +112,27 @@ public:
     {
     	return _purchaseCallback;
     }
-    
+
     inline void setCheckSubscriptionCallback(ProtocolIAPCheckSubscriptionCallback & cb){
         _checkSubscriptionCallback = cb;
     }
-    
+
     inline ProtocolIAPCheckSubscriptionCallback getCheckSubscriptionCallback(){
         return _checkSubscriptionCallback;
     }
-    
+
     inline void setProductRequestCallback(ProtocolIAPProductRequestCallback & cb){
         _productRequestsCallback = cb;
     }
-    
+
     inline ProtocolIAPProductRequestCallback getProductRequestCallback(){
         return _productRequestsCallback;
     }
-    
+
     inline void setRestoreCallback(ProtocolIAPRestoreCallback & cb){
         _restoreCallback = cb;
     }
-    
+
     inline ProtocolIAPRestoreCallback getRestoreCallback(){
         return _restoreCallback;
     }

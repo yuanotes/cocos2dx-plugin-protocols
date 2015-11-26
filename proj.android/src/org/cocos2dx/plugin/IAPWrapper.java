@@ -23,11 +23,21 @@ THE SOFTWARE.
 ****************************************************************************/
 package org.cocos2dx.plugin;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+
 public class IAPWrapper {
 	public static final int PAYRESULT_SUCCESS = 0;
 	public static final int PAYRESULT_FAIL    = 1;
-	public static final int PAYRESULT_RESTORED  = 2;
-	public static final int PAYRESULT_TIMEOUT = 3;
+
+    public static final int SUBSCRIPTION_SUCCESS = 0;
+    public static final int SUBSCRIPTION_FAIL    = 1;
+
+    public static final int REQUEST_SUCCESS    = 0;
+    public static final int REQUEST_FAIL    = 1;
+
+    public static final int RESTORE_SUCCESS    = 0;
+    public static final int RESTORE_FAIL    = 1;
 
 	public static void onPayResult(InterfaceIAP obj, int ret, String msg) {
 		final int curRet = ret;
@@ -40,5 +50,41 @@ public class IAPWrapper {
 			}
 		});
 	}
+	public static void onCheckSubscriptionResult(InterfaceIAP obj, int ret, String msg) {
+		final int curRet = ret;
+		final String curMsg = msg;
+		final InterfaceIAP curObj = obj;
+		PluginWrapper.runOnGLThread(new Runnable() {
+			@Override
+			public void run() {
+                nativeOnCheckSubscriptionResult(PluginWrapper.getAliasNameFromPlugin(curObj), curRet, curMsg);
+			}
+		});
+	}
+	public static void onRequestResult(InterfaceIAP obj, int ret, ArrayList<Hashtable<String, String>> products) {
+		final int curRet = ret;
+		final ArrayList<Hashtable<String, String>> curProducts = products;
+		final InterfaceIAP curObj = obj;
+		PluginWrapper.runOnGLThread(new Runnable() {
+			@Override
+			public void run() {
+                nativeOnRequestResult(PluginWrapper.getAliasNameFromPlugin(curObj), curRet, curProducts);
+			}
+		});
+	}
+	public static void onRestoreResult(InterfaceIAP obj, int ret, ArrayList<String> products) {
+		final int curRet = ret;
+		final ArrayList<String> curProducts = products;
+		final InterfaceIAP curObj = obj;
+		PluginWrapper.runOnGLThread(new Runnable() {
+			@Override
+			public void run() {
+                nativeOnRestoreResult(PluginWrapper.getAliasNameFromPlugin(curObj), curRet, curProducts);
+			}
+		});
+	}
 	private static native void nativeOnPayResult(String aliasName, int ret, String msg);
+	private static native void nativeOnCheckSubscriptionResult(String aliasName, int ret, String msg);
+	private static native void nativeOnRequestResult(String aliasName, int ret, ArrayList<Hashtable<String, String>> products);
+	private static native void nativeOnRestoreResult(String aliasName, int ret, ArrayList<String> products);
 }

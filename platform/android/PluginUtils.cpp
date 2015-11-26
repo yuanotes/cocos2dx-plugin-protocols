@@ -49,24 +49,44 @@ void PluginUtils::initPluginWrapper(android_app* app)
 
 jobject PluginUtils::createJavaMapObject(std::map<std::string, std::string>* paramMap)
 {
+    if (paramMap == NULL){
+        return NULL;
+    }
     JNIEnv* env = getEnv();
 	jclass class_Hashtable = env->FindClass("java/util/Hashtable");
 	jmethodID construct_method = env->GetMethodID( class_Hashtable, "<init>","()V");
 	jobject obj_Map = env->NewObject( class_Hashtable, construct_method, "");
-	if (paramMap != NULL)
+	jmethodID add_method= env->GetMethodID( class_Hashtable,"put","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+	for (std::map<std::string, std::string>::const_iterator it = paramMap->begin(); it != paramMap->end(); ++it)
 	{
-		jmethodID add_method= env->GetMethodID( class_Hashtable,"put","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-		for (std::map<std::string, std::string>::const_iterator it = paramMap->begin(); it != paramMap->end(); ++it)
-		{
-            jstring first = env->NewStringUTF(it->first.c_str());
-            jstring second = env->NewStringUTF(it->second.c_str());
-			env->CallObjectMethod(obj_Map, add_method, first, second);
-            env->DeleteLocalRef(first);
-            env->DeleteLocalRef(second);
-		}
+        jstring first = env->NewStringUTF(it->first.c_str());
+        jstring second = env->NewStringUTF(it->second.c_str());
+		env->CallObjectMethod(obj_Map, add_method, first, second);
+        env->DeleteLocalRef(first);
+        env->DeleteLocalRef(second);
 	}
     env->DeleteLocalRef(class_Hashtable);
     return obj_Map;
+}
+
+jobject PluginUtils::createArrayFromVector(std::vector<std::string> *paramVector){
+    if (NULL == paramVector)
+    {
+        return NULL;
+    }
+    JNIEnv* env = getEnv();
+	jclass class_Array = env->FindClass("java/util/ArrayList");
+	jmethodID construct_method = env->GetMethodID( class_Array, "<init>","()V");
+	jobject obj_Array = env->NewObject( class_Array, construct_method, "");
+	jmethodID add_method= env->GetMethodID( class_Array,"add","(Ljava/lang/Object;)V");
+	for (auto it = paramVector->begin(); it != paramVector->end(); ++it)
+	{
+        jstring val = env->NewStringUTF(it->c_str());
+		env->CallVoidMethod(obj_Array, add_method, val);
+        env->DeleteLocalRef(val);
+	}
+    env->DeleteLocalRef(class_Array);
+    return obj_Array;
 }
 
 void PluginUtils::initJavaPlugin(PluginProtocol* pPlugin, jobject jObj, const char* aliasName, const char* className)
