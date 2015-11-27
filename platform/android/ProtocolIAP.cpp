@@ -78,31 +78,44 @@ extern "C" {
                 if (products) {
                     // retrieve the java.util.List interface class
                     jclass cList = env->FindClass("java/util/List");
+                    jclass cHash = env->FindClass("java/util/Hashtable");
 
                     // retrieve the size and the get method
-                    jmethodID mSize = env->GetMethodID(cList, "size", "()I");
-                    jmethodID mGet = env->GetMethodID(cList, "get", "(I)Ljava/lang/Object;");
+                    jmethodID mArrSize = env->GetMethodID(cList, "size", "()I");
+                    jmethodID mArrGet = env->GetMethodID(cList, "get", "(I)Ljava/lang/Object;");
+
+                    jmethodID mHashGet = env->GetMethodID(cList, "get", "(Ljava/lang/Object)Ljava/lang/Object;");
 
                     // get the size of the list
-                    jint size = env->CallIntMethod(products, mSize);
+                    jint size = env->CallIntMethod(products, mArrSize);
 
                     // walk through and fill the vector
-                    // for(jint i=0;i<size;i++) {
-                    //     jstring strObj = (jstring)env->CallObjectMethod(products, mGet, i);
-                    //     const char * chr = env->GetStringUTFChars(strObj, JNI_FALSE);
-                    //     TProductInfo productInfo;
-                    //     result.push_back(chr);
-                    //     env->ReleaseStringUTFChars(strObj, chr);
-                    // }
+                    for(jint i=0;i<size;i++) {
+                        jobject info = env->CallObjectMethod(products, mArrGet, i);
 
-                    // for(SKProduct *product in products){
-                    //     TProductInfo productInfo;
-                    //     productInfo["productId"] = product.productIdentifier.UTF8String;
-                    //     productInfo["productName"] = product.localizedTitle.UTF8String;
-                    //     productInfo["productPrice"] = [NSString stringWithFormat:@"%0.2f", product.price.floatValue].UTF8String;
-                    //     productInfo["productDesc"] = product.localizedDescription.UTF8String;
-                    //     result.push_back(productInfo);
-                    // }
+                        jstring productIdKey = env->NewStringUTF("productId");
+                        jstring productId = (jstring)env->CallObjectMethod(info, mHashGet, productIdKey);
+
+                        jstring productNameKey = env->NewStringUTF("productName");
+                        jstring productName = (jstring)env->CallObjectMethod(info, mHashGet, productNameKey);
+
+                        jstring productPriceKey = env->NewStringUTF("productPrice");
+                        jstring productPrice = (jstring)env->CallObjectMethod(info, mHashGet, productPriceKey);
+
+                        jstring productDescKey = env->NewStringUTF("productDesc");
+                        jstring productDesc = (jstring)env->CallObjectMethod(info, mHashGet, productDescKey);
+
+                        TProductInfo productInfo;
+                        productInfo["productId"] =  PluginJniHelper::jstring2string(productId);
+                        productInfo["productName"] =  PluginJniHelper::jstring2string(productName);
+                        productInfo["productPrice"] =  PluginJniHelper::jstring2string(productPrice);
+                        productInfo["productDesc"] =  PluginJniHelper::jstring2string(productDesc);
+                        result.push_back(productInfo);
+                        env->DeleteLocalRef(productIdKey);
+                        env->DeleteLocalRef(productNameKey);
+                        env->DeleteLocalRef(productPriceKey);
+                        env->DeleteLocalRef(productDescKey);
+                    }
                 }
                 pIAP->getProductRequestCallback()((IAPProductRequestCode)ret,result);
             } else {
